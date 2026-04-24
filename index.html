@@ -8,28 +8,22 @@
   <style>
     body {
       margin: 0;
-      height: 100vh;
       font-family: Arial, sans-serif;
       color: white;
       text-align: center;
       background: radial-gradient(circle at top, #1a001a, #000);
       overflow-x: hidden;
+      padding-bottom: 40px; /* evita que se corte abajo */
     }
 
-    /* FONDO ANIMADO */
     body::before {
       content: "";
-      position: absolute;
+      position: fixed;
       width: 200%;
       height: 200%;
-      background: repeating-linear-gradient(
-        45deg,
-        rgba(255,0,150,0.05),
-        rgba(255,0,150,0.05) 10px,
-        transparent 10px,
-        transparent 20px
-      );
+      background: repeating-linear-gradient(45deg, rgba(255,0,150,0.05), rgba(255,0,150,0.05) 10px, transparent 10px, transparent 20px);
       animation: moveBg 10s linear infinite;
+      z-index: 0;
     }
 
     @keyframes moveBg {
@@ -43,6 +37,8 @@
       margin-top: 20px;
       filter: drop-shadow(0 0 20px #ff0080);
       animation: glow 2s infinite alternate;
+      position: relative;
+      z-index: 2;
     }
 
     @keyframes glow {
@@ -75,12 +71,8 @@
       overflow: hidden;
     }
 
-    /* CLICK EFECTO MOBILE */
-    .btn:active {
-      transform: scale(0.95);
-    }
+    .btn:active { transform: scale(0.95); }
 
-    /* BRILLO */
     .btn::after {
       content: "";
       position: absolute;
@@ -92,9 +84,7 @@
       transition: 0.5s;
     }
 
-    .btn:hover::after {
-      left: 100%;
-    }
+    .btn:hover::after { left: 100%; }
 
     .atencion {
       background: #ff0080;
@@ -115,21 +105,18 @@
       animation: vibrar 0.8s infinite;
     }
 
-    /* ANIMACION PRINCIPAL */
     @keyframes vibrar {
       0% { transform: scale(1); }
       50% { transform: scale(1.05); }
       100% { transform: scale(1); }
     }
 
-    /* ANIMACION SUAVE */
     @keyframes vibrarSuave {
       0% { transform: scale(1); }
       50% { transform: scale(1.02); }
       100% { transform: scale(1); }
     }
 
-    /* POPUP */
     .popup {
       position: fixed;
       top: 10px;
@@ -146,7 +133,6 @@
       display: none;
     }
 
-    /* NOTI */
     .noti {
       position: fixed;
       bottom: 10px;
@@ -159,6 +145,28 @@
       text-align: center;
       display: none;
       z-index: 999;
+    }
+
+    .jackpotFX {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      color: gold;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: bold;
+      z-index: 1000;
+      animation: zoom 0.5s ease;
+    }
+
+    @keyframes zoom {
+      from { transform: scale(0.5); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
     }
 
   </style>
@@ -182,38 +190,43 @@
       🎰 Soporte de juego
     </a>
 
-    <a href="https://wa.me/5491168164385?text=Quiero%20el%2030%25%20de%20regalo" class="btn ventas" target="_blank">
+    <a href="https://wa.me/5491168164385?text=Quiero%20el%2030%25%20de%20regalo" class="btn ventas" id="btnVentas" target="_blank">
       💰 HACÉ CLICK PARA CARGAR
     </a>
 
   </div>
 
   <div class="noti" id="noti"></div>
+  <div class="jackpotFX" id="jackpotFX">💰 GANASTE UN BONO 💰</div>
+
+  <audio id="sonido" src="https://www.soundjay.com/misc/sounds/coins-01.mp3"></audio>
 
   <script>
-    // POPUP
     setTimeout(() => {
       document.getElementById('popup').style.display = 'block';
     }, 1500);
 
-    // NOTIFICACIONES FAKE
     const nombres = ["Juan", "Lucas", "Martín", "Sofía", "Micaela", "Tomi"];
     const montos = ["$5.000", "$10.000", "$25.000", "$50.000"];
 
     function mostrarNoti() {
       const nombre = nombres[Math.floor(Math.random() * nombres.length)];
       const monto = montos[Math.floor(Math.random() * montos.length)];
-
       const noti = document.getElementById('noti');
       noti.innerText = `${nombre} acaba de cargar ${monto}`;
       noti.style.display = 'block';
-
-      setTimeout(() => {
-        noti.style.display = 'none';
-      }, 3000);
+      setTimeout(() => { noti.style.display = 'none'; }, 3000);
     }
 
     setInterval(mostrarNoti, 5000);
+
+    document.getElementById("btnVentas").addEventListener("click", function() {
+      if (navigator.vibrate) navigator.vibrate([200,100,200]);
+      document.getElementById("sonido").play().catch(()=>{});
+      const fx = document.getElementById("jackpotFX");
+      fx.style.display = 'flex';
+      setTimeout(() => { fx.style.display = 'none'; }, 1200);
+    });
   </script>
 
 </body>
