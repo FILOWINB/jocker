@@ -6,83 +6,162 @@
   <title>BetJocker</title>
 
   <style>
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    color: white;
-    text-align: center;
-    background: radial-gradient(circle at top, #1a001a, #000);
-    overflow-x: hidden;
-  }
+    body {
+      margin: 0;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+      color: white;
+      text-align: center;
+      background: radial-gradient(circle at top, #1a001a, #000);
+      overflow-x: hidden;
+    }
 
-  .logo img {
-    width: 80%;
-    max-width: 260px;
-    margin-top: 20px;
-  }
+    /* FONDO ANIMADO */
+    body::before {
+      content: "";
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      background: repeating-linear-gradient(
+        45deg,
+        rgba(255,0,150,0.05),
+        rgba(255,0,150,0.05) 10px,
+        transparent 10px,
+        transparent 20px
+      );
+      animation: moveBg 10s linear infinite;
+    }
 
-  .botones {
-    margin-top: 25px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    align-items: center;
-    padding: 0 15px;
-  }
+    @keyframes moveBg {
+      from { transform: translate(0,0); }
+      to { transform: translate(-200px,-200px); }
+    }
 
-  .btn {
-    width: 100%;
-    max-width: 300px;
-    padding: 16px;
-    border-radius: 12px;
-    font-size: 16px;
-    font-weight: bold;
-    text-decoration: none;
-    color: white;
-  }
+    .logo img {
+      width: 80%;
+      max-width: 260px;
+      margin-top: 20px;
+      filter: drop-shadow(0 0 20px #ff0080);
+      animation: glow 2s infinite alternate;
+    }
 
-  .atencion {
-    background: #ff0080;
-  }
+    @keyframes glow {
+      from { filter: drop-shadow(0 0 10px #ff0080); }
+      to { filter: drop-shadow(0 0 30px #ff0080); }
+    }
 
-  .soporte {
-    background: #cc00ff;
-  }
+    .botones {
+      margin-top: 25px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      align-items: center;
+      padding: 0 15px;
+      position: relative;
+      z-index: 2;
+    }
 
-  .ventas {
-    background: #25D366;
-    font-size: 18px;
-  }
+    .btn {
+      width: 100%;
+      max-width: 300px;
+      padding: 16px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      text-decoration: none;
+      color: white;
+      transition: 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
 
-  /* 🔥 POPUP ARREGLADO PARA CELU */
-  .popup {
-    position: fixed;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #ff0080;
-    padding: 10px 15px;
-    border-radius: 10px;
-    font-size: 13px;
-    width: 90%;
-    max-width: 320px;
-    text-align: center;
-    z-index: 999;
-  }
+    /* CLICK EFECTO MOBILE */
+    .btn:active {
+      transform: scale(0.95);
+    }
 
-  /* NOTI */
-  .noti {
-    position: fixed;
-    bottom: 10px;
-    left: 10px;
-    right: 10px;
-    background: #111;
-    padding: 10px;
-    border-radius: 10px;
-    font-size: 12px;
-    text-align: center;
-  }
-</style>
+    /* BRILLO */
+    .btn::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(120deg, transparent, rgba(255,255,255,0.5), transparent);
+      transition: 0.5s;
+    }
+
+    .btn:hover::after {
+      left: 100%;
+    }
+
+    .atencion {
+      background: #ff0080;
+      box-shadow: 0 0 15px #ff0080;
+      animation: vibrarSuave 2s infinite;
+    }
+
+    .soporte {
+      background: #cc00ff;
+      box-shadow: 0 0 15px #cc00ff;
+      animation: vibrarSuave 2s infinite;
+    }
+
+    .ventas {
+      background: #25D366;
+      box-shadow: 0 0 20px #25D366;
+      font-size: 18px;
+      animation: vibrar 0.8s infinite;
+    }
+
+    /* ANIMACION PRINCIPAL */
+    @keyframes vibrar {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    /* ANIMACION SUAVE */
+    @keyframes vibrarSuave {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+      100% { transform: scale(1); }
+    }
+
+    /* POPUP */
+    .popup {
+      position: fixed;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #ff0080;
+      padding: 10px 15px;
+      border-radius: 10px;
+      font-size: 13px;
+      width: 90%;
+      max-width: 320px;
+      text-align: center;
+      z-index: 999;
+      display: none;
+    }
+
+    /* NOTI */
+    .noti {
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+      right: 10px;
+      background: #111;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      text-align: center;
+      display: none;
+      z-index: 999;
+    }
+
+  </style>
 </head>
 
 <body>
@@ -112,7 +191,7 @@
   <div class="noti" id="noti"></div>
 
   <script>
-    // POPUP aparece
+    // POPUP
     setTimeout(() => {
       document.getElementById('popup').style.display = 'block';
     }, 1500);
